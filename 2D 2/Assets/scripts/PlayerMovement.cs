@@ -10,7 +10,9 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D  rb2D;
     private float HorizontalMovement;
 
+    public int facing = 1;
 
+    public bool canMove = true;
 
     // Start is called before the first frame update
     void Start()
@@ -24,17 +26,36 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         HorizontalMovement = Input.GetAxis("Horizontal");
+        float flipX = Input.GetAxisRaw("Horizontal");
+
+
+        if(flipX != 0 && canMove == true)
+        {
+            FlipPlayer(flipX);
+        }
+
     }
 
-    private void FixedUpdate(){
-            Vector2 PlayerVelocity = new Vector2(HorizontalMovement * moveSpeed, rb2D.velocity.y);
-            rb2D.velocity = PlayerVelocity;
+    private void FixedUpdate() {
+        Walk();
+
+    }
+    public void Walk()
+    {
+        Vector2 playerVelocity = new Vector2(HorizontalMovement * moveSpeed, rb2D.velocity.y);
+        rb2D.velocity = playerVelocity;
+
+    }
 
 
 
 
+    public void FlipPlayer(float x)
+    {
+        transform.localScale = new Vector2(x, transform.localScale.y);
+        facing = (int)x;
+    }
+    
 
 
-
-}
 }
