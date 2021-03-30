@@ -6,7 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     
 
-         public float moveSpeed = 2;
+    public float moveSpeed = 2;
+    public float jumpForce = 2;
     Rigidbody2D  rb2D;
     private float HorizontalMovement;
 
@@ -29,10 +30,20 @@ public class PlayerMovement : MonoBehaviour
         float flipX = Input.GetAxisRaw("Horizontal");
 
 
-        if(flipX != 0 && canMove == true)
+        if (flipX != 0 && canMove == true)
         {
             FlipPlayer(flipX);
         }
+        
+        if (Input.GetButtonDown("Jump"))
+        {
+            Vector2 jumpVelocity = new Vector2(0f, jumpForce);
+            rb2D.velocity += jumpVelocity;
+        }
+
+
+
+        
 
     }
 
