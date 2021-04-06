@@ -14,6 +14,14 @@ public class PlayerMovement : MonoBehaviour
     public int facing = 1;
 
     public bool canMove = true;
+    public CircleCollider2D myFeet;
+
+
+
+
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
             FlipPlayer(flipX);
         }
         
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump")&&myFeet.IsTouchingLayers(LayerMask.GetMask("Ground")))
         {
             Vector2 jumpVelocity = new Vector2(0f, jumpForce);
             rb2D.velocity += jumpVelocity;
