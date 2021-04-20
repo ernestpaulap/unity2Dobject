@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
+
 
     public float moveSpeed = 2;
     public float jumpForce = 2;
-    Rigidbody2D  rb2D;
+    Rigidbody2D rb2D;
     private float HorizontalMovement;
-
+    public float climbSpeed = 2;
     public int facing = 1;
 
     public bool canMove = true;
     public CircleCollider2D myFeet;
 
-
+    private float gravityScaler;
 
 
 
@@ -24,11 +24,12 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Start is called before the first frame update
+
     void Start()
     {
 
         rb2D = GetComponent<Rigidbody2D>();
-
+        gravityScaler = rb2D.gravityScale;
     }
 
     // Update is called once per frame
@@ -42,16 +43,16 @@ public class PlayerMovement : MonoBehaviour
         {
             FlipPlayer(flipX);
         }
-        
-        if (Input.GetButtonDown("Jump")&&myFeet.IsTouchingLayers(LayerMask.GetMask("Ground")))
+
+        if (Input.GetButtonDown("Jump") && myFeet.IsTouchingLayers(LayerMask.GetMask("Ground")))
         {
             Vector2 jumpVelocity = new Vector2(0f, jumpForce);
             rb2D.velocity += jumpVelocity;
         }
 
+        climbLadder();
 
 
-        
 
     }
 
@@ -74,7 +75,22 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector2(x, transform.localScale.y);
         facing = (int)x;
     }
-    
 
+    public void climbLadder()
+    {
+        if (!myFeet.IsTouchingLayers(LayerMask.GetMask("climbing")))
+        {
+
+            rb2D.gravityScale = gravityScaler;
+            return;
+
+        }
+
+        float verticalMovement = Input.GetAxis("Vertical");
+        Vector2 climbVelocity = new Vector2(0, verticalMovement * climbSpeed);
+        rb2D.gravityScale = 0;
+        rb2D.velocity = climbVelocity;
+
+    }
 
 }
