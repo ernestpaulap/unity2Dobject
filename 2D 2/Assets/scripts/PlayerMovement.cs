@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public CircleCollider2D myFeet;
 
     private float gravityScaler;
-
+    private bool isAlive = true;
 
 
 
@@ -35,6 +35,13 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isAlive==false)
+        {
+
+            return;
+
+
+        }
         HorizontalMovement = Input.GetAxis("Horizontal");
         float flipX = Input.GetAxisRaw("Horizontal");
 
@@ -56,8 +63,16 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    { 
+        if(!isAlive)
+        
+        {
+        return;
+        
+        }
         Walk();
+
 
     }
     public void Walk()
@@ -76,21 +91,40 @@ public class PlayerMovement : MonoBehaviour
         facing = (int)x;
     }
 
-    public void climbLadder()
+public void climbLadder()
+{
+    if (!myFeet.IsTouchingLayers(LayerMask.GetMask("climbing")))
     {
-        if (!myFeet.IsTouchingLayers(LayerMask.GetMask("climbing")))
-        {
 
-            rb2D.gravityScale = gravityScaler;
-            return;
+        rb2D.gravityScale = gravityScaler;
+        return;
 
+    }
+
+    float verticalMovement = Input.GetAxis("Vertical");
+    Vector2 climbVelocity = new Vector2(0, verticalMovement * climbSpeed);
+    rb2D.gravityScale = 0;
+    rb2D.velocity = climbVelocity;
+}
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.GetComponent<EnemyMovement>()) 
+        { 
+        if(isAlive)
+            {
+                Die();
+            }
+        
+        
         }
 
-        float verticalMovement = Input.GetAxis("Vertical");
-        Vector2 climbVelocity = new Vector2(0, verticalMovement * climbSpeed);
-        rb2D.gravityScale = 0;
-        rb2D.velocity = climbVelocity;
+    }
+    public void Die()
+    {
 
+        isAlive = false;
+        rb2D.velocity = Vector3.zero;
+    
     }
 
 }
